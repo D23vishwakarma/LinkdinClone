@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import logo from "../assets/logo.svg";
 import { useState } from "react";
 import { BiSolidShow } from "react-icons/bi";
@@ -7,12 +7,17 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { authContext } from "../context/AuthContext";
 import axios from "axios";
-function Login() {
+import { userContext } from "../context/UserContext";
+function Signup() {
     const [show,setShow]=useState(false);
     const navigate=useNavigate();
     const {serverUrl}=useContext(authContext)
     const [loading,setLoading]=useState(false)
-
+    
+    const {userData,setUserData}=useContext(userContext)
+    const [firstName,setFirstName]=useState("");
+    const [lastName,setLastName]=useState("");
+    const [username,setUsername]=useState("");
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
 
@@ -22,12 +27,20 @@ function Login() {
         e.preventDefault();
         setLoading(true);
         try {
-            const result=await axios.post(serverUrl+"/api/auth/login",{
+            const result=await axios.post(serverUrl+"/api/auth/signup",{
+                firstName,
+                lastName,
+                username,
                 email,
                 password
             },{withCredentials:true})
+            setUserData(result.data)
+            navigate("/")
             setLoading(false)
+            setFirstName("")
+            setLastName("")
             setPassword("")
+            setUsername("")
             setEmail("")
             console.log(result)
         } catch (error) {
@@ -45,9 +58,33 @@ function Login() {
       </div>
 
       {/* Form */}
-      <div className="flex justify-center items-center px-4 pb-10 mt-24">
+      <div className="flex justify-center items-center px-4 pb-10">
         <form className="w-full max-w-[400px] bg-white rounded-md shadow-lg px-6 sm:px-8 py-8 scale-80 md:scale-100" onSubmit={handleSubmit}>
-          <h1 className="text-3xl font-semibold mb-8">Sign In</h1>
+          <h1 className="text-3xl font-semibold mb-8">Sign Up</h1>
+
+          <input
+            type="text"
+            placeholder="Firstname"
+            className="w-full border border-gray-400 rounded-sm px-4 py-3 mb-4 outline-none focus:border-[#0A66C2]"
+            value={firstName}
+            onChange={(e)=>setFirstName(e.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Lastname"
+            className="w-full border border-gray-400 rounded-sm px-4 py-3 mb-4 outline-none focus:border-[#0A66C2]"
+             value={lastName}
+            onChange={(e)=>setLastName(e.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full border border-gray-400 rounded-sm px-4 py-3 mb-4 outline-none focus:border-[#0A66C2]"
+             value={username}
+            onChange={(e)=>setUsername(e.target.value)}
+          />
 
           <input
             type="email"
@@ -79,13 +116,13 @@ function Login() {
             className="w-full bg-[#0A66C2] hover:bg-[#004182] transition text-white font-medium py-3 rounded-full"
             disabled={loading}
           >
-           {loading?"Loading...":"Sign In"}
+           {loading?"Loading...":"Sign Up"}
           </button>
         
-          <p className="text-center text-sm mt-5 cursor-pointer" onClick={()=>navigate("/signup")}>
-            Don't have an account?{" "}
+          <p className="text-center text-sm mt-5 cursor-pointer" onClick={()=>navigate("/login")}>
+            Already have an account?{" "}
             <span className="text-[#0A66C2] font-semibold cursor-pointer hover:underline">
-              Sign Up
+              Sign In
             </span>
           </p>
         </form>
@@ -94,4 +131,4 @@ function Login() {
   );
 }
 
-export default Login
+export default Signup;
