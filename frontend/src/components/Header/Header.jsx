@@ -16,7 +16,7 @@ export default function Header() {
     const navigate=useNavigate();
     const handleSignout=async()=>{
         try {
-            const result=await axios.post(serverUrl+"/api/auth/logout",{withCredentials:true})
+            const result=await axios.get(serverUrl+"/api/auth/logout",{withCredentials:true})
             setUserData(null);
             navigate("/login")
         } catch (error) {
@@ -24,14 +24,14 @@ export default function Header() {
         }
     }
     return (
-        <div className="flex justify-center items-center w-full bg-white border-b p-1 border-gray-200 fixed top-0">
-            <div className="w-full max-w-[1100px] flex items-center justify-between px-4 sm:px-6 py-2">
+        <div className="flex justify-center items-center w-full bg-white border-b p-1 border-gray-200 fixed top-0 z-10">
+            <div className="w-full max-w-[1200px] flex items-center justify-between px-4 sm:px-6 py-2">
                 {/* Left: Logo + Search */}
                 <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                     <img src={shortlogo} className="w-8 h-8 sm:w-9 sm:h-9 shrink-0" alt="Logo" />
 
                     {/* Search — full on desktop, icon-only on mobile */}
-                    <div className="hidden sm:flex items-center bg-gray-100 rounded px-3 py-1.5 w-64">
+                    <div className="hidden sm:flex items-center bg-gray-100 border border-zinc-400 rounded-xl px-3 py-1.5 w-64">
                         <svg
                             className="w-4 h-4 text-gray-500 mr-2 shrink-0"
                             fill="none"
@@ -64,7 +64,7 @@ export default function Header() {
                 </div>
 
                 {/* Right: Nav icons + Profile */}
-                <div className="flex items-center gap-3 sm:gap-6 shrink-0 relative">
+                <div className="flex items-center gap-4 sm:gap-8 shrink-0 relative">
                     {showpopup &&<div className={`absolute bg-white w-72 top-15 rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden`}>
                         {/* Pop up  */}
                         <div className="flex flex-col items-center p-6 pb-4">
