@@ -1,4 +1,4 @@
-import { FaHome, FaUserFriends, FaBell, FaSearch,FaSignOutAlt, FaChevronRight } from "react-icons/fa";
+import { FaHome, FaUserFriends, FaBell, FaSearch,FaSignOutAlt, FaChevronRight,FaCaretDown } from "react-icons/fa";
 import shortlogo from '../../assets/shortlogo.svg'
 import profile from '../../assets/profile.svg'
 import { useState } from "react";
@@ -69,7 +69,7 @@ export default function Header() {
                         {/* Pop up  */}
                         <div className="flex flex-col items-center p-6 pb-4">
                             <img
-                                src={profile}
+                                src={userData.profileImage?userData.profileImage:profile}
                                 alt="Profile"
                                 className="w-16 h-16 rounded-full object-cover cursor-pointer shrink-0 border border-gray-200"
                             />
@@ -127,12 +127,13 @@ export default function Header() {
 
                     {/* Profile image */}
                     <img
-                        src={profile}
+                        src={userData.profileImage?userData.profileImage:profile}
                         alt="Profile"
                         className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover cursor-pointer shrink-0"
                         onClick={()=>setShowpopup(!showpopup)}
 
                     />
+                    <FaCaretDown className="absolute top-8 left-67.5 text-zinc-500" />
                 </div>
             </div>
         </div>
