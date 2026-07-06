@@ -34,7 +34,7 @@ function Signup() {
                 email,
                 password
             },{withCredentials:true})
-            setUserData(result.data)
+            setUserData(result.data.data)
             navigate("/")
             setLoading(false)
             setFirstName("")

@@ -9,15 +9,18 @@ import EditProfile from '../components/EditProfile';
 import { useState, useRef } from 'react';
 import { RxCross2 } from "react-icons/rx";
 import { BsImage } from "react-icons/bs";
+import axios from 'axios';
+import { authContext } from '../context/AuthContext';
+import Post from '../components/Post';
 
 function Home() {
-    const { userData, setUserData, edit, setEdit } = useContext(userContext);
+    const { userData, setUserData, edit, setEdit,post,setPost } = useContext(userContext);
     const [addPost, setAddPost] = useState(false);
     const [content, setContent] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
     const imageInputRef = useRef();
-
+    const { serverUrl } = useContext(authContext)
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -31,8 +34,27 @@ function Home() {
         setPreviewImage(null);
     };
 
+    const uploadPost = async (req, res) => {
+        try {
+            const formdata = new FormData()
+            formdata.append("description", content);
+            if (selectedImage) {
+                formdata.append("image", selectedImage);
+            }
+            const result = await axios.post(serverUrl + "/api/post/createpost", formdata, { withCredentials: true })
+            console.log(result);
+            setPost(prevPost=>[result.data.data,...prevPost])
+            setAddPost(!addPost)
+            setContent("")
+            setPreviewImage(null)
+            setSelectedImage(null);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
-        <div className='w-full bg-[#f0efe7] h-screen flex flex-col md:flex-row items-start justify-center pt-17 md:pt-20 md:px-2 gap-[15px] md:gap-[15px]'>
+        <div className='w-full bg-[#f0efe7] h-full overflow-hidden flex flex-col md:flex-row items-start justify-center pt-17 md:pt-20 md:px-2 gap-[15px] md:gap-[15px]'>
             {edit && <EditProfile />}
             <Header />
             {/* First Section */}
@@ -86,88 +108,107 @@ function Home() {
             </div>
             {/* middle */}
             {addPost && <div className='w-full h-screen bg-black opacity-70 absolute top-0 z-200'></div>}
-            {addPost && <div className='w-130 h-130 bg-white absolute top-20 z-250 rounded-xl flex flex-col overflow-hidden'>
-                {/* Header */}
-                <div className='flex items-center justify-between p-4 border-b border-zinc-200'>
-                    <div className='flex items-center gap-3'>
-                        <img
-                            src={userData.profileImage ? userData.profileImage : profile}
-                            alt="Profile"
-                            className="w-12 h-12 rounded-full object-cover"
-                        />
-                        <div>
-                            <div className='font-semibold text-zinc-800 text-base'>
-                                {userData.firstName} {userData.lastName}
+            {addPost && (
+                <>
+                    {/* Backdrop */}
+                    <div
+                        className='fixed inset-0 bg-black/50 z-[240]'
+                        onClick={() => setAddPost(false)}
+                    />
+
+                    {/* Modal */}
+                    <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+                        w-[92vw] max-w-[550px] h-[85vh] max-h-[550px] 
+                        sm:w-[500px] sm:h-[500px]
+                        bg-white z-[250] rounded-xl flex flex-col overflow-hidden'>
+
+                        {/* Header */}
+                        <div className='flex items-center justify-between p-3 sm:p-4 border-b border-zinc-200'>
+                            <div className='flex items-center gap-2 sm:gap-3'>
+                                <img
+                                    src={userData.profileImage ? userData.profileImage : profile}
+                                    alt="Profile"
+                                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+                                />
+                                <div>
+                                    <div className='font-semibold text-zinc-800 text-sm sm:text-base'>
+                                        {userData.firstName} {userData.lastName}
+                                    </div>
+                                    <button className='flex items-center gap-1 text-xs text-zinc-600 border border-zinc-400 rounded-full px-2 py-0.5 mt-0.5 hover:bg-gray-100'>
+                                        Post to Anyone
+                                    </button>
+                                </div>
                             </div>
-                            <button className='flex items-center gap-1 text-xs text-zinc-600 border border-zinc-400 rounded-full px-2 py-0.5 mt-0.5 hover:bg-gray-100'>
-                                Post to Anyone
+                            <button onClick={() => setAddPost(!addPost)} className='text-zinc-600 hover:bg-gray-100 rounded-full p-1'>
+                                <RxCross2 size={22} />
+                            </button>
+                        </div>
+
+                        {/* Description textarea */}
+                        <div className='flex-1 overflow-y-auto p-3 sm:p-4'>
+                            <textarea
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                                placeholder="What do you want to talk about?"
+                                className='w-full h-full min-h-[100px] sm:min-h-[120px] outline-none resize-none text-base sm:text-lg placeholder-zinc-500'
+                            />
+
+                            {previewImage && (
+                                <div className='relative mt-2'>
+                                    <img
+                                        src={previewImage}
+                                        alt="Preview"
+                                        className='w-full max-h-60 sm:max-h-80 object-cover rounded-lg'
+                                    />
+                                    <button
+                                        onClick={removeImage}
+                                        className='absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80'
+                                    >
+                                        <RxCross2 size={16} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Image add section + Post button */}
+                        <div className='flex items-center justify-between p-2 sm:p-3 border-t border-zinc-200'>
+                            <button
+                                onClick={() => imageInputRef.current.click()}
+                                className='text-zinc-600 hover:bg-gray-100 rounded-full p-2'
+                            >
+                                <BsImage size={22} />
+                            </button>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                hidden
+                                ref={imageInputRef}
+                                onChange={handleImageChange}
+                            />
+
+                            <button
+                                disabled={!content.trim() && !selectedImage}
+                                className='bg-[#0a66c2] text-white font-medium text-sm px-4 py-1.5 rounded-full disabled:bg-zinc-200 disabled:text-zinc-400 hover:bg-[#004182] disabled:hover:bg-zinc-200 transition-colors'
+                                onClick={uploadPost}
+                            >
+                                Post
                             </button>
                         </div>
                     </div>
-                    <button onClick={()=>setAddPost(!addPost)} className='text-zinc-600 hover:bg-gray-100 rounded-full p-1'>
-                        <RxCross2 size={22} />
-                    </button>
-                </div>
-
-                {/* Description textarea */}
-                <div className='flex-1 overflow-y-auto p-4'>
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        placeholder="What do you want to talk about?"
-                        className='w-full h-full min-h-[120px] outline-none resize-none text-lg placeholder-zinc-500'
-                    />
-
-                    {previewImage && (
-                        <div className='relative mt-2'>
-                            <img
-                                src={previewImage}
-                                alt="Preview"
-                                className='w-full max-h-80 object-cover rounded-lg'
-                            />
-                            <button
-                                onClick={removeImage}
-                                className='absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80'
-                            >
-                                <RxCross2 size={16} />
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                {/* Image add section + Post button */}
-                <div className='flex items-center justify-between p-3 border-t border-zinc-200'>
-                    <button
-                        onClick={() => imageInputRef.current.click()}
-                        className='text-zinc-600 hover:bg-gray-100 rounded-full p-2'
-                    >
-                        <BsImage size={22} />
-                    </button>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        hidden
-                        ref={imageInputRef}
-                        onChange={handleImageChange}
-                    />
-
-                    <button
-                        disabled={!content.trim() && !selectedImage}
-                        className='bg-[#0a66c2] text-white font-medium text-sm px-4 py-1.5 rounded-full disabled:bg-zinc-200 disabled:text-zinc-400 hover:bg-[#004182] disabled:hover:bg-zinc-200 transition-colors'
-                    >
-                        Post
-                    </button>
-                </div>
-            </div>}
-            <div className='w-full md:w-[40%]'>
+                </>
+            )}
+            <div className='w-full md:w-[40%] flex flex-col justify-center items-center gap-5 overflow-hidden overflow-y-auto'>
                 <div className='w-full h-22 flex justify-center items-center gap-7 bg-white rounded-lg border border-zinc-200 px-5'>
                     <img
                         src={userData.profileImage ? userData.profileImage : profile}
                         alt="Profile"
                         className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover cursor-pointer shrink-0 scale-140"
                     />
-                    <div className='w-120 h-12 rounded-full border border-zinc-400 flex justify-start items-center font-semibold text-zinc-800 p-4 cursor-pointer hover:bg-[#f0efe7]' onClick={()=>setAddPost(!addPost)}>Start a Post</div>
+                    <div className='w-120 h-12 rounded-full border border-zinc-400 flex justify-start items-center font-semibold text-zinc-800 p-4 cursor-pointer hover:bg-[#f0efe7]' onClick={() => setAddPost(!addPost)}>Start a Post</div>
                 </div>
+                {post.map((post)=>(
+                    <Post key={post._id} id={post._id} author={post.author} likes={post.likes} comments={post.comments} description={post.description} image={post.image} createdAt={post.createdAt}/>
+                ))}
             </div>
             {/* Last section */}
             <div className='h-70 w-full bg-white md:w-[19%] rounded-lg border border-zinc-200'></div>

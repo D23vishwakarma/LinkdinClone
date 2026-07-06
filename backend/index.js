@@ -5,6 +5,7 @@ import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import userRouter from './routes/user.routes.js';
+import { postRouter } from './routes/post.routes.js';
 dotenv.config();
 
 const app= express();
@@ -19,6 +20,7 @@ app.use(cors({
 const port=process.env.PORT||4000;
 app.use("/api/auth/",authRouter)
 app.use("/api/user/",userRouter)
+app.use("/api/post/",postRouter)
 app.get("/",(req,res)=>{
     res.send("helloo whatsup")
 })
