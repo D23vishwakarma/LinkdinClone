@@ -23,14 +23,13 @@ function UserContext({children}) {
     const getPost=async()=>{
         try {
             const result=await axios.get(serverUrl+"/api/post/getpost",{withCredentials:true})
-            console.log(result.data.data);
             setPost(result.data.data)
         } catch (error) {
             console.log(error);
         }
     }
     const value={
-        userData,setUserData,edit,setEdit,post,setPost
+        userData,setUserData,edit,setEdit,post,setPost,getPost
     }
     useEffect(()=>{
         getCurrentUser()
