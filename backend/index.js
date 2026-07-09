@@ -7,9 +7,16 @@ import cors from 'cors'
 import userRouter from './routes/user.routes.js';
 import { postRouter } from './routes/post.routes.js';
 import { connectionRouter } from './routes/connection.routes.js';
+import http from 'http'
+import { Server, Socket } from 'socket.io';
 dotenv.config();
 
 const app= express();
+const server=http.createServer(app)
+export const io=new Server(server,{cors:({
+    origin:"http://localhost:5173",
+    credentials:true
+})})
 app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,6 +30,12 @@ app.use("/api/auth/",authRouter)
 app.use("/api/user/",userRouter)
 app.use("/api/post/",postRouter)
 app.use("/api/connection/",connectionRouter)
+io.on("connection",(socket)=>{
+  console.log("User connected",socket.id);
+    socket.on("disconnect",(socket)=>{
+    console.log("user disconnected",socket.id)
+  })
+})
 app.get("/",(req,res)=>{
     res.send("helloo whatsup")
 })
@@ -33,7 +46,7 @@ app.use((err, req, res, next) => {
     errors: err.errors || []
   });
 });
-app.listen(port,(req,res)=>{
+server.listen(port,(req,res)=>{
     connectDB()
     console.log(`app is running on ${port} port`);
 })

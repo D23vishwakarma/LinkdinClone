@@ -2,6 +2,7 @@ import { ApiError } from "../config/apiError.js";
 import { ApiResponse } from "../config/apiResponse.js";
 import { asyncHandler } from "../config/asyncHandler.js";
 import { uploadOnCloudinary } from "../config/cloudinary.js";
+import { io } from "../index.js";
 import { Post } from "../models/post.model.js";
 
 export const createPost = asyncHandler(async (req, res) => {
@@ -51,8 +52,9 @@ export const like = asyncHandler(async (req, res) => {
     } else {
         post.likes.push(userId);
     }
-
     await post.save();
+    io.emit("likeUpdated",{postId,likes:post.likes})
+    
 
     return res.status(200).json(
         new ApiResponse(200, post, "Post like updated successfully")
@@ -71,6 +73,7 @@ export const comment=asyncHandler(async(req,res)=>{
             comments:{content,user:userId}
         }
     },{new:true}).populate("comments.user","firstName lastName headline profileImage")
+    io.emit("commentAdded",{postId,comment:post.comments})
 
     return res.status(200).json(
         new ApiResponse(200,post,"Comments added successfully")

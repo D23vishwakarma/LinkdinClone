@@ -9,8 +9,11 @@ import moment from 'moment'
 import { authContext } from '../context/AuthContext';
 import axios from 'axios';
 import { userContext } from '../context/UserContext';
+import {io} from 'socket.io-client'
 
+const socket=io("http://localhost:4000")
 function Post({ id, author, likes, comments, description, image, createdAt }) {
+    
     const [liked, setLiked] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const { serverUrl } = useContext(authContext);
@@ -32,6 +35,24 @@ function Post({ id, author, likes, comments, description, image, createdAt }) {
             console.log(error);
         }
     }
+    useEffect(()=>{
+        socket.on("likeUpdated",({postId,likes})=>{
+            if(postId===id){
+                setLike(likes)
+            }
+            return ()=>{
+                socket.off("likeUpdated")
+            }
+        })
+        socket.on("commentAdded",({postId,comment})=>{
+            if(postId===id){
+                setCommentList(comment)
+            }
+            return ()=>{
+                socket.off("commentAdded")
+            }
+        })
+    },[id])
 
     useEffect(() => {
         setCommentList(comments || []);
