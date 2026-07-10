@@ -7,6 +7,7 @@ import { userContext } from "../../context/UserContext";
 import axios from "axios";
 import { authContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Header() {
     const [mobsearch, setMobsearch] = useState(false)
@@ -91,7 +92,7 @@ export default function Header() {
                         {/* Manage section */}
                         <div className="flex flex-col py-2">
                             <button className="flex items-center justify-between px-6 py-3 hover:bg-gray-100 transition-colors text-left">
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3" onClick={()=>navigate("/network")}>
                                     <FaUserFriends className="w-4 h-4 text-gray-500" />
                                     <span className="text-sm text-zinc-700">My Network</span>
                                 </div>
@@ -110,11 +111,11 @@ export default function Header() {
                         </div>
                     </div>
 }
-                    <div className="hidden sm:flex flex-col items-center text-gray-500 cursor-pointer">
+                    <Link to={"/"} className="hidden sm:flex flex-col items-center text-gray-500 cursor-pointer">
                         <FaHome className="w-5 h-5" />
                         <span className="text-xs mt-0.5">Home</span>
-                    </div>
-                    <div className="hidden sm:flex flex-col items-center text-gray-500 cursor-pointer">
+                    </Link>
+                    <div className="hidden sm:flex flex-col items-center text-gray-500 cursor-pointer" onClick={()=>navigate("/network")}>
                         <FaUserFriends className="w-5 h-5" />
                         <span className="text-xs mt-0.5">My Network</span>
                     </div>

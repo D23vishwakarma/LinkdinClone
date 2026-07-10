@@ -30,10 +30,14 @@ app.use("/api/auth/",authRouter)
 app.use("/api/user/",userRouter)
 app.use("/api/post/",postRouter)
 app.use("/api/connection/",connectionRouter)
+export const userSocketMap=new Map();
 io.on("connection",(socket)=>{
-  console.log("User connected",socket.id);
+  // console.log("User connected",socket.id);
+    socket.on("register",(userId)=>{
+      userSocketMap.set(userId,socket.id)
+    })
     socket.on("disconnect",(socket)=>{
-    console.log("user disconnected",socket.id)
+    // console.log("user disconnected",socket.id)
   })
 })
 app.get("/",(req,res)=>{

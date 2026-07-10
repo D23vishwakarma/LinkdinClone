@@ -10,6 +10,7 @@ import { authContext } from '../context/AuthContext';
 import axios from 'axios';
 import { userContext } from '../context/UserContext';
 import {io} from 'socket.io-client'
+import ConnectionBtn from './ConnectionBtn';
 
 const socket=io("http://localhost:4000")
 function Post({ id, author, likes, comments, description, image, createdAt }) {
@@ -102,9 +103,7 @@ function Post({ id, author, likes, comments, description, image, createdAt }) {
                         </p>
                     </div>
                 </div>
-                <button className='text-[#0a66c2] font-semibold text-sm hover:bg-blue-50 px-2 py-1 rounded-full transition-colors'>
-                    + Connect
-                </button>
+                {userData._id!=author._id && <ConnectionBtn userId={author._id}/>}
             </div>
 
             {/* Description */}

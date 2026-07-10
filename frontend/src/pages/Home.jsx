@@ -58,7 +58,7 @@ function Home() {
             {edit && <EditProfile />}
             <Header />
             {/* First Section */}
-            <div className='w-full bg-white md:w-[15%] rounded-lg relative border border-zinc-200 overflow-hidden min-h-40' onClick={() => { setEdit(!edit) }}>
+            <div className='w-full bg-white md:w-[15%] rounded-lg relative border border-zinc-200 overflow-hidden min-h-40 ' onClick={() => { setEdit(!edit) }}>
                 {/* Cover photo */}
                 <div className='bg-gray-200 rounded-t-md h-15 relative'>
                     {userData.coverImage && <img

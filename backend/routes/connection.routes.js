@@ -4,10 +4,10 @@ import { acceptCon, getAllCon, getConReq, getConStatus, rejectCon, removeCon, se
 
 export const connectionRouter=express.Router();
 
-connectionRouter.get("/send/:id",veriftAuth,sendConnection);
-connectionRouter.get("/accept/:connectionId",veriftAuth,acceptCon);
-connectionRouter.get("/reject/:connectionId",veriftAuth,rejectCon);
+connectionRouter.post("/send/:id",veriftAuth,sendConnection);
+connectionRouter.put("/accept/:connectionId",veriftAuth,acceptCon);
+connectionRouter.put("/reject/:connectionId",veriftAuth,rejectCon);
 connectionRouter.get("/getstatus/:userId",veriftAuth,getConStatus);
-connectionRouter.get("/remove/:userId",veriftAuth,removeCon);
+connectionRouter.delete("/remove/:userId",veriftAuth,removeCon);
 connectionRouter.get("/getrequests",veriftAuth,getConReq);
 connectionRouter.get("/connections",veriftAuth,getAllCon);
