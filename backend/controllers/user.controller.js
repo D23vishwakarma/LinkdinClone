@@ -56,3 +56,14 @@ export const updateProfile = asyncHandler(async (req, res) => {
         new ApiResponse(200, user, "profile updated successfully")
     );
 });
+
+export const getProfile=asyncHandler(async(req,res)=>{
+    const {username}=req.params;
+    const user=await User.findOne({username}).select("-password");
+    if(!user){
+        throw new ApiError(400,"User doesn't Exists");
+    }
+    return res.status(200).json(
+        new ApiResponse(200,user,"user profile fetched")
+    )
+})

@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
     const [mobsearch, setMobsearch] = useState(false)
-    const { userData,setUserData } = useContext(userContext);
+    const { userData,setUserData,handleGetProfile } = useContext(userContext);
     const {serverUrl}=useContext(authContext);
     const [showpopup,setShowpopup]=useState(false)
     const navigate=useNavigate();
@@ -82,7 +82,7 @@ export default function Header() {
                                     {userData.headline}
                                 </div>
                             )}
-                            <button className="mt-4 w-[90%] h-[35px] rounded-full border-2 border-[#288ab4] text-[#288ab4] font-medium text-sm hover:bg-[#e8f3f8] transition-colors">
+                            <button className="mt-4 w-[90%] h-[35px] rounded-full border-2 border-[#288ab4] text-[#288ab4] font-medium text-sm hover:bg-[#e8f3f8] transition-colors" onClick={()=>handleGetProfile({username:userData.username})}>
                                 View Profile
                             </button>
                         </div>

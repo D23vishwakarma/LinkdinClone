@@ -8,6 +8,7 @@ import Signup from './pages/Signup'
 import { useContext } from 'react'
 import { userContext } from './context/UserContext'
 import Network from './pages/Network'
+import Profile from './pages/Profile'
 function App() {
   const [count, setCount] = useState(0)
   const {userData}=useContext(userContext)
@@ -17,6 +18,9 @@ function App() {
       <Route path='/login' element={userData?<Navigate to="/"/>:<Login/>}/>
       <Route path='/signup' element={userData?<Navigate to="/"/>:<Signup/>}/>
       <Route path='/network' element={userData?<Network/>:<Login/>}/>
+      <Route path='/profile' element={userData?<Navigate to={`/profile/${userData.username}`}/>:<Login/>}/>
+      <Route path='/profile/:username' element={userData?<Profile />:<Login/>}/>
+      
 
     </Routes>
   )

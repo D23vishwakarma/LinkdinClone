@@ -19,7 +19,7 @@ function Post({ id, author, likes, comments, description, image, createdAt }) {
     const [expanded, setExpanded] = useState(false);
     const { serverUrl } = useContext(authContext);
     const [like, setLike] = useState(likes || []);
-    const { getPost, userData } = useContext(userContext);
+    const { getPost, userData,handleGetProfile } = useContext(userContext);
 
     const [showComments, setShowComments] = useState(false);
     const [commentList, setCommentList] = useState(comments || []);
@@ -83,7 +83,7 @@ function Post({ id, author, likes, comments, description, image, createdAt }) {
         <div className='w-full bg-white rounded-lg p-4 text-zinc-800 border border-zinc-200 min-h-[30px]'>
             {/* Header */}
             <div className='flex items-center justify-between'>
-                <div className='flex items-start gap-3'>
+                <div className='flex items-start gap-3' onClick={()=>handleGetProfile({username:author?.username})}>
                     <img
                         src={author?.profileImage ? author.profileImage : profile}
                         alt="Profile"
@@ -109,7 +109,7 @@ function Post({ id, author, likes, comments, description, image, createdAt }) {
             {/* Description */}
             {description && (
                 <div className='mt-3 text-[15px] leading-snug whitespace-pre-line'>
-                    <span className={!expanded && isLong ? "line-clamp-3" : ""}>
+                    <span className={!expanded && isLong ? "line-clamp-4" : ""}>
                         {description}
                     </span>
                     {isLong && (

@@ -28,7 +28,7 @@ export const createPost = asyncHandler(async (req, res) => {
 });
 
 export const getPosts=asyncHandler(async(req,res)=>{
-    const post=await Post.find().populate("author", "firstName lastName profileImage headline").populate("comments.user", "firstName lastName profileImage headline")
+    const post=await Post.find().populate("author", "firstName lastName profileImage headline username").populate("comments.user", "firstName lastName profileImage headline ")
 
     return res.status(200).json(
         new ApiResponse(200,post,"Showing all posts")
@@ -72,7 +72,7 @@ export const comment=asyncHandler(async(req,res)=>{
         $push:{
             comments:{content,user:userId}
         }
-    },{new:true}).populate("comments.user","firstName lastName headline profileImage")
+    },{new:true}).populate("comments.user","firstName lastName headline profileImage username")
     io.emit("commentAdded",{postId,comment:post.comments})
 
     return res.status(200).json(
