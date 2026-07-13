@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from '../components/Header/Header'
 import profile from '../assets/profile.svg'
 import { CiCirclePlus } from "react-icons/ci";
@@ -12,13 +12,17 @@ import { BsImage } from "react-icons/bs";
 import axios from 'axios';
 import { authContext } from '../context/AuthContext';
 import Post from '../components/Post';
+import ConnectionBtn from '../components/ConnectionBtn';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
-    const { userData, setUserData, edit, setEdit,post,setPost } = useContext(userContext);
+    const navigate=useNavigate();
+    const { userData, setUserData, edit, setEdit, post, setPost, searchPop, setSearchPop } = useContext(userContext);
     const [addPost, setAddPost] = useState(false);
     const [content, setContent] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
+    const [suggestedUser, setSuggestedUser] = useState([]);
     const imageInputRef = useRef();
     const { serverUrl } = useContext(authContext)
     const handleImageChange = (e) => {
@@ -28,7 +32,18 @@ function Home() {
             setPreviewImage(URL.createObjectURL(file));
         }
     };
-
+    const handleSuggestion = async () => {
+        try {
+            const result = await axios.get(serverUrl + "/api/user/suggestion", { withCredentials: true })
+            setSuggestedUser(result.data.data);
+            console.log(result.data.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        handleSuggestion()
+    }, [])
     const removeImage = () => {
         setSelectedImage(null);
         setPreviewImage(null);
@@ -42,8 +57,7 @@ function Home() {
                 formdata.append("image", selectedImage);
             }
             const result = await axios.post(serverUrl + "/api/post/createpost", formdata, { withCredentials: true })
-            console.log(result);
-            setPost(prevPost=>[result.data.data,...prevPost])
+            setPost(prevPost => [result.data.data, ...prevPost])
             setAddPost(!addPost)
             setContent("")
             setPreviewImage(null)
@@ -206,12 +220,50 @@ function Home() {
                     />
                     <div className='w-120 h-12 rounded-full border border-zinc-400 flex justify-start items-center font-semibold text-zinc-800 p-4 cursor-pointer hover:bg-[#f0efe7]' onClick={() => setAddPost(!addPost)}>Start a Post</div>
                 </div>
-                {post.map((post)=>(
-                    <Post key={post._id} id={post._id} author={post.author} likes={post.likes} comments={post.comments} description={post.description} image={post.image} createdAt={post.createdAt}/>
+                {post.map((post) => (
+                    <Post key={post._id} id={post._id} author={post.author} likes={post.likes} comments={post.comments} description={post.description} image={post.image} createdAt={post.createdAt} />
                 ))}
             </div>
             {/* Last section */}
-            <div className='h-70 w-full bg-white md:w-[19%] rounded-lg border border-zinc-200'></div>
+            <div className='min-h-40 max-h-76 w-full bg-white md:w-[19%] rounded-lg border border-zinc-200 hidden md:flex flex-col overflow-hidden'>
+                <h3 className='px-4 pt-4 pb-2 font-semibold text-sm text-zinc-800'>
+                    Add to your feed
+                </h3>
+
+                <div className='flex flex-col overflow-y-auto'>
+                    {suggestedUser.map((it) => (
+                        <div
+                            key={it._id}
+                            className='flex items-start gap-3 px-4 py-3 border-t border-zinc-100'
+                        >
+                            <img
+                                src={it.profileImage || profile}
+                                alt={it.name}
+                                onClick={() => navigate(`/profile/${it.username}`)}
+                                className='w-10 h-10 rounded-full object-cover cursor-pointer'
+                            />
+
+                            <div className='flex flex-col flex-1 min-w-0'>
+                                <span
+                                    onClick={() => navigate(`/profile/${it.username}`)}
+                                    className='text-sm font-medium text-zinc-800 truncate cursor-pointer hover:underline'
+                                >
+                                    {it.firstName} {it.lastName}
+                                </span>
+                                <span className='text-xs text-zinc-500 truncate'>
+                                    {it.headline}
+                                </span>
+
+                                <button
+                                    className='mt-1.5 h-7.5 flex items-center justify-center border border-zinc-400 text-zinc-700 rounded-full px-1 text-xs font-semibold w-20 hover:bg-zinc-100'
+                                >
+                                <ConnectionBtn userId={it._id} />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     )
 }

@@ -12,6 +12,7 @@ function UserContext({children}) {
     const [userData,setUserData]=useState(null)
     const {serverUrl}=useContext(authContext)
     const [edit,setEdit]=useState(false)
+    const [searchPop,setSearchPop]=useState(false);
     const [post,setPost]=useState([])
     const [profileData,setProfileData]=useState([])
     const getCurrentUser=async()=>{
@@ -41,7 +42,7 @@ function UserContext({children}) {
         }
     }
     const value={
-        userData,setUserData,edit,setEdit,post,setPost,getPost,handleGetProfile,profileData,setProfileData
+        userData,setUserData,edit,setEdit,post,setPost,getPost,handleGetProfile,profileData,setProfileData,searchPop,setSearchPop
     }
     useEffect(()=>{
         getCurrentUser()

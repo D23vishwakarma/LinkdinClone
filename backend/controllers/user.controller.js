@@ -1,3 +1,4 @@
+import { connect } from "http2";
 import { ApiError } from "../config/apiError.js";
 import { ApiResponse } from "../config/apiResponse.js";
 import { asyncHandler } from "../config/asyncHandler.js";
@@ -65,5 +66,34 @@ export const getProfile=asyncHandler(async(req,res)=>{
     }
     return res.status(200).json(
         new ApiResponse(200,user,"user profile fetched")
+    )
+})
+export const search=asyncHandler(async(req,res)=>{
+    const {query}=req.query;
+    if(!query){
+        throw new ApiError(400,"query is required");
+    }
+    const user=await User.find({
+        $or:[
+            {firstName:{$regex:query,$options:"i"}},
+            {lastName:{$regex:query,$options:"i"}},
+            {username:{$regex:query,$options:"i"}},
+            {skills:{$in:[query]}}
+            
+        ]
+    })
+    return res.status(200).json(
+        new ApiResponse(200,user,"All related profiles")
+    )
+})
+export const getSuggestedUser=asyncHandler(async(req,res)=>{
+    const currUser=await User.findById(req.userId).select("connection");
+    const suggestedUSer=await User.find({
+        _id:{
+            $ne:currUser,$nin:currUser.connection
+        }
+    })
+    return res.status(200).json(
+        new ApiResponse(200,suggestedUSer,"these are the suggested users")
     )
 })

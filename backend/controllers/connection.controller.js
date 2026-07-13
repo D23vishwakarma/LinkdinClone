@@ -150,7 +150,7 @@ export const getConStatus = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(
-        new ApiResponse(200, { status: "connect" }, "connect status shown")
+        new ApiResponse(200, { status: "+connect" }, "connect status shown")
     )
 })
 

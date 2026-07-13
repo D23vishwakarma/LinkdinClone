@@ -1,7 +1,7 @@
-import { FaHome, FaUserFriends, FaBell, FaSearch,FaSignOutAlt, FaChevronRight,FaCaretDown } from "react-icons/fa";
+import { FaHome, FaUserFriends, FaBell, FaSearch, FaSignOutAlt, FaChevronRight, FaCaretDown } from "react-icons/fa";
 import shortlogo from '../../assets/shortlogo.svg'
 import profile from '../../assets/profile.svg'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { userContext } from "../../context/UserContext";
 import axios from "axios";
@@ -11,28 +11,44 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
     const [mobsearch, setMobsearch] = useState(false)
-    const { userData,setUserData,handleGetProfile } = useContext(userContext);
-    const {serverUrl}=useContext(authContext);
-    const [showpopup,setShowpopup]=useState(false)
-    const navigate=useNavigate();
-    const handleSignout=async()=>{
+    const { userData, setUserData, handleGetProfile, searchPop, setSearchPop } = useContext(userContext);
+    const { serverUrl } = useContext(authContext);
+    const [showpopup, setShowpopup] = useState(false)
+    const [searchInput, setSearchInput] = useState("");
+    const [searchData, setSearchData] = useState([]);
+
+    const navigate = useNavigate();
+    const handleSignout = async () => {
         try {
-            const result=await axios.get(serverUrl+"/api/auth/logout",{withCredentials:true})
+            const result = await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
             setUserData(null);
             navigate("/login")
         } catch (error) {
             console.log(error)
         }
     }
+    const handleSearch = async () => {
+        try {
+            const result = await axios.get(serverUrl + `/api/user/search?query=${searchInput}`, { withCredentials: true })
+            console.log(result.data.data)
+            setSearchData(result.data.data);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        handleSearch();
+    }, [searchInput])
     return (
         <div className="flex justify-center items-center w-full bg-white border-b p-1 border-gray-200 fixed top-0 z-10">
+            {searchPop && <div className="bg-black opacity-50 top-15 absolute w-full h-screen" onClick={() => setSearchPop(false)}></div>}
             <div className="w-full max-w-[1200px] flex items-center justify-between px-4 sm:px-6 py-2">
                 {/* Left: Logo + Search */}
                 <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                     <img src={shortlogo} className="w-8 h-8 sm:w-9 sm:h-9 shrink-0" alt="Logo" />
 
                     {/* Search — full on desktop, icon-only on mobile */}
-                    <div className="hidden sm:flex items-center bg-gray-100 border border-zinc-400 rounded-xl px-3 py-1.5 w-64">
+                    <div className={`hidden sm:flex items-center bg-gray-100 border  rounded-xl px-3 py-1.5 w-64 ${searchPop ? 'w-130 border-black' : 'border-zinc-400'} hover:border-zinc-900`} onClick={() => setSearchPop(true)}>
                         <svg
                             className="w-4 h-4 text-gray-500 mr-2 shrink-0"
                             fill="none"
@@ -50,6 +66,7 @@ export default function Header() {
                             type="text"
                             placeholder="Search"
                             className="bg-transparent outline-none text-sm w-full placeholder-gray-500"
+                            onChange={(e) => setSearchInput(e.target.value)} value={searchInput}
                         />
                     </div>
 
@@ -61,16 +78,49 @@ export default function Header() {
                         type="text"
                         placeholder="Search"
                         className={`${mobsearch ? '' : 'hidden'} bg-transparent outline-none text-sm w-full placeholder-gray-500`}
+                        onChange={(e) => setSearchInput(e.target.value)} value={searchInput}
+                        
                     />
                 </div>
-
+                {searchPop && (
+                    <div className="absolute bg-white min-h-10 w-130 top-13 left-59 border border-zinc-400 rounded-xl shadow-lg overflow-hidden z-50">
+                        {searchData && searchData.length > 0 ? (
+                            searchData.map((user) => (
+                                <div
+                                    key={user._id}
+                                    onClick={() => {
+                                        navigate(`/profile/${user.username}`);
+                                        setSearchPop(false);
+                                    }}
+                                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                >
+                                    <img
+                                        src={user.profileImage|| profile}
+                                        alt={user.name}
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <div className="flex flex-col overflow-hidden">
+                                        <span className="font-semibold text-sm truncate">
+                                            {user.firstName} {user.lastName}
+                                        </span>
+                                        <span className="text-xs text-gray-500 truncate">
+                                            {user.headline}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
+                        )}
+                    </div>
+                )}
                 {/* Right: Nav icons + Profile */}
                 <div className="flex items-center gap-4 sm:gap-8 shrink-0 relative">
-                    {showpopup &&<div className={`absolute bg-white w-72 top-15 rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden`}>
+                    {showpopup && <div className={`absolute bg-white w-72 top-15 rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden`}>
                         {/* Pop up  */}
                         <div className="flex flex-col items-center p-6 pb-4">
                             <img
-                                src={userData.profileImage?userData.profileImage:profile}
+                                src={userData.profileImage ? userData.profileImage : profile}
                                 alt="Profile"
                                 className="w-16 h-16 rounded-full object-cover cursor-pointer shrink-0 border border-gray-200"
                             />
@@ -82,7 +132,7 @@ export default function Header() {
                                     {userData.headline}
                                 </div>
                             )}
-                            <button className="mt-4 w-[90%] h-[35px] rounded-full border-2 border-[#288ab4] text-[#288ab4] font-medium text-sm hover:bg-[#e8f3f8] transition-colors" onClick={()=>handleGetProfile({username:userData.username})}>
+                            <button className="mt-4 w-[90%] h-[35px] rounded-full border-2 border-[#288ab4] text-[#288ab4] font-medium text-sm hover:bg-[#e8f3f8] transition-colors" onClick={() => handleGetProfile({ username: userData.username })}>
                                 View Profile
                             </button>
                         </div>
@@ -92,7 +142,7 @@ export default function Header() {
                         {/* Manage section */}
                         <div className="flex flex-col py-2">
                             <button className="flex items-center justify-between px-6 py-3 hover:bg-gray-100 transition-colors text-left">
-                                <div className="flex items-center gap-3" onClick={()=>navigate("/network")}>
+                                <div className="flex items-center gap-3" onClick={() => navigate("/network")}>
                                     <FaUserFriends className="w-4 h-4 text-gray-500" />
                                     <span className="text-sm text-zinc-700">My Network</span>
                                 </div>
@@ -110,12 +160,12 @@ export default function Header() {
                             </button>
                         </div>
                     </div>
-}
+                    }
                     <Link to={"/"} className="hidden sm:flex flex-col items-center text-gray-500 cursor-pointer">
                         <FaHome className="w-5 h-5" />
                         <span className="text-xs mt-0.5">Home</span>
                     </Link>
-                    <div className="hidden sm:flex flex-col items-center text-gray-500 cursor-pointer" onClick={()=>navigate("/network")}>
+                    <div className="hidden sm:flex flex-col items-center text-gray-500 cursor-pointer" onClick={() => navigate("/network")}>
                         <FaUserFriends className="w-5 h-5" />
                         <span className="text-xs mt-0.5">My Network</span>
                     </div>
@@ -128,10 +178,10 @@ export default function Header() {
 
                     {/* Profile image */}
                     <img
-                        src={userData.profileImage?userData.profileImage:profile}
+                        src={userData.profileImage ? userData.profileImage : profile}
                         alt="Profile"
                         className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover cursor-pointer shrink-0"
-                        onClick={()=>setShowpopup(!showpopup)}
+                        onClick={() => setShowpopup(!showpopup)}
 
                     />
                     <FaCaretDown className="absolute top-8 left-67.5 text-zinc-500" />

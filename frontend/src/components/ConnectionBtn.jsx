@@ -22,8 +22,6 @@ function ConnectionBtn({ userId }) {
           withCredentials: true,
         }
       );
-
-      console.log(result);
       setStatus("pending")
     } catch (error) {
       console.log(error.response?.data || error.message);
@@ -38,9 +36,7 @@ function ConnectionBtn({ userId }) {
           withCredentials: true,
         }
       );
-
-      console.log(result);
-      setStatus("conncet")
+      setStatus("+conncet")
     } catch (error) {
       console.log(error.response?.data || error.message);
     }
@@ -54,8 +50,6 @@ function ConnectionBtn({ userId }) {
           withCredentials: true,
         }
       );
-
-      console.log(result);
       setStatus(result.data.data.status);
     } catch (error) {
       console.log(error.response?.data || error.message);
@@ -87,14 +81,14 @@ function ConnectionBtn({ userId }) {
       await removeCon();
     } else if (status === "received") {
       navigate("/network");
-    } else if (status === "connect") {
+    } else if (status === "+connect") {
       await sendCon();
     }
   };
 
   return (
     <button
-      className="text-[#0a66c2] font-semibold text-sm hover:bg-blue-50 px-2 py-1 rounded-full transition-colors disabled:opacity-50"
+      className="flex justify-center items-center text-[#0a66c2] font-semibold text-sm hover:bg-blue-50 px-2 py-1 rounded-full transition-colors disabled:opacity-50"
       onClick={handleClick}
       disabled={!status || status === "pending"}
     >
