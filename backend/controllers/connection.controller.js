@@ -4,6 +4,7 @@ import { asyncHandler } from "../config/asyncHandler.js";
 import { Connection } from "../models/connection.model.js";
 import { User } from "../models/user.model.js";
 import { io, userSocketMap } from '../index.js'
+import { Notification } from "../models/notification.models.js";
 
 export const sendConnection = asyncHandler(async (req, res) => {
     const { id } = req.params
@@ -40,6 +41,12 @@ export const sendConnection = asyncHandler(async (req, res) => {
     if (senderSocketId) {
         io.to(senderSocketId).emit("statusUpdate", { updateduserId: id, newStatus: "pending" })
     }
+    const notification=await Notification.create({
+                receiver:id,
+                type:"connectionRequest",
+                sender,
+            })
+    
     return res.status(200).json(
         new ApiResponse(200, newReq, "User connected")
     )
@@ -57,6 +64,11 @@ export const acceptCon = asyncHandler(async (req, res) => {
     }
     connection.status = "accepted"
     await connection.save();
+    const notification=await Notification.create({
+                receiver:connection.sender,
+                type:"connectionAccepted",
+                sender:req.userId,
+            })
     await User.findByIdAndUpdate(req.userId, {
         $addToSet: {
             connection: connection.sender

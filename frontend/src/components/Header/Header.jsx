@@ -41,11 +41,11 @@ export default function Header() {
     }, [searchInput])
     return (
         <div className="flex justify-center items-center w-full bg-white border-b p-1 border-gray-200 fixed top-0 z-10">
-            {searchPop && <div className="bg-black opacity-50 top-15 absolute w-full h-screen" onClick={() => setSearchPop(false)}></div>}
+            {(searchPop||mobsearch) && <div className="bg-black opacity-50 top-15 absolute w-full h-screen" onClick={() => setSearchPop(false)}></div>}
             <div className="w-full max-w-[1200px] flex items-center justify-between px-4 sm:px-6 py-2">
                 {/* Left: Logo + Search */}
                 <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                    <img src={shortlogo} className="w-8 h-8 sm:w-9 sm:h-9 shrink-0" alt="Logo" />
+                    <Link to={"/"}><img src={shortlogo} className="w-8 h-8 sm:w-9 sm:h-9 shrink-0" alt="Logo" /></Link>
 
                     {/* Search — full on desktop, icon-only on mobile */}
                     <div className={`hidden sm:flex items-center bg-gray-100 border  rounded-xl px-3 py-1.5 w-64 ${searchPop ? 'w-130 border-black' : 'border-zinc-400'} hover:border-zinc-900`} onClick={() => setSearchPop(true)}>
@@ -79,11 +79,11 @@ export default function Header() {
                         placeholder="Search"
                         className={`${mobsearch ? '' : 'hidden'} bg-transparent outline-none text-sm w-full placeholder-gray-500`}
                         onChange={(e) => setSearchInput(e.target.value)} value={searchInput}
-                        
+
                     />
                 </div>
-                {searchPop && (
-                    <div className="absolute bg-white min-h-10 w-130 top-13 left-59 border border-zinc-400 rounded-xl shadow-lg overflow-hidden z-50">
+                {(searchPop||mobsearch) && (
+                    <div className="fixed md:absolute inset-x-3 md:inset-x-auto top-16 md:top-13 left-0 md:left-59 right-0 md:right-auto w-auto md:w-130 min-h-10 bg-white border border-zinc-400 rounded-xl shadow-lg overflow-hidden z-50 max-h-80 md:max-h-none overflow-y-auto">
                         {searchData && searchData.length > 0 ? (
                             searchData.map((user) => (
                                 <div
@@ -95,9 +95,9 @@ export default function Header() {
                                     className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                 >
                                     <img
-                                        src={user.profileImage|| profile}
+                                        src={user.profileImage || profile}
                                         alt={user.name}
-                                        className="w-10 h-10 rounded-full object-cover"
+                                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                                     />
                                     <div className="flex flex-col overflow-hidden">
                                         <span className="font-semibold text-sm truncate">
@@ -116,7 +116,7 @@ export default function Header() {
                 )}
                 {/* Right: Nav icons + Profile */}
                 <div className="flex items-center gap-4 sm:gap-8 shrink-0 relative">
-                    {showpopup && <div className={`absolute bg-white w-72 top-15 rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden`}>
+                    {showpopup && <div className={`absolute bg-white w-72 top-6 sm:top-15 -left-46 scale-80 sm:scale-100 sm:left-0 rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden`}>
                         {/* Pop up  */}
                         <div className="flex flex-col items-center p-6 pb-4">
                             <img
@@ -171,10 +171,10 @@ export default function Header() {
                     </div>
 
                     {/* Bell — always visible, no label on mobile */}
-                    <div className="flex flex-col items-center text-gray-500 cursor-pointer">
+                    <Link to={"/notification"} className="flex flex-col items-center text-gray-500 cursor-pointer">
                         <FaBell className="w-5 h-5" />
                         <span className="hidden sm:block text-xs mt-0.5">Notifications</span>
-                    </div>
+                    </Link>
 
                     {/* Profile image */}
                     <img

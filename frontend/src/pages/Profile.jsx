@@ -23,11 +23,11 @@ function Profile() {
         <div className='bg-[#f0efe7] w-full min-h-screen flex flex-col items-start'>
             {edit && <EditProfile />}
             <Header />
-            <div className='w-full max-w-3xl mx-auto mt-20 px-4 pb-10'>
+            <div className='w-full max-w-3xl mx-auto mt-16 md:mt-20 px-3 md:px-4 pb-10'>
 
                 {/* Cover + profile image + basic info */}
-                <div className='bg-white rounded-lg border border-zinc-200 overflow-hidden'>
-                    <div className='w-full h-48 bg-gray-200 relative overflow-hidden'>
+                <div className='bg-white rounded-lg border border-zinc-200 overflow-hidden relative'>
+                    <div className='w-full h-28 md:h-48 bg-gray-200 relative overflow-hidden'>
                         {profileData.coverImage && (
                             <img
                                 src={profileData.coverImage}
@@ -37,18 +37,18 @@ function Profile() {
                         )}
                     </div>
 
-                    <div className='px-6 pb-6'>
-                        <div className='-mt-17 relative w-fit'>
+                    <div className='px-4 md:px-6 pb-4 md:pb-6'>
+                        <div className='-mt-10 md:-mt-17 relative w-fit'>
                             <img
                                 src={profileData.profileImage ? profileData.profileImage : profile}
                                 alt="Profile"
-                                className='w-32 h-32 rounded-full object-cover border-4 border-white'
+                                className='w-20 h-20 md:w-32 md:h-32 rounded-full object-cover border-4 border-white'
                             />
                         </div>
 
-                        <div className='flex items-start justify-between mt-3'>
+                        <div className='flex flex-col sm:flex-row sm:items-start justify-between mt-3 gap-2 sm:gap-0'>
                             <div className='min-w-0'>
-                                <h1 className='text-2xl font-semibold text-zinc-900 truncate'>
+                                <h1 className='text-xl md:text-2xl font-semibold text-zinc-900 truncate'>
                                     {profileData.firstName} {profileData.lastName}
                                 </h1>
                                 <p className='text-zinc-500 text-xs mt-0.5'>
@@ -69,12 +69,12 @@ function Profile() {
                                 </p>
                             </div>
 
-                            <div className='shrink-0'>
+                            <div className='shrink-0 self-end sm:self-auto'>
                                {profileData._id==userData._id ? <button
                                     onClick={() => setEdit(true)}
-                                    className='p-4 absolute top-70 right-101'
+                                    className='p-2 md:p-4 absolute top-3 right-3 md:top-70 md:right-101'
                                 >
-                                    <FaPencilAlt className='text-zinc-700' size={20} />
+                                    <FaPencilAlt className='text-zinc-700' size={18} />
                                 </button>: <ConnectionBtn userId={profileData._id}/>}
                             </div>
                         </div>
@@ -82,7 +82,7 @@ function Profile() {
                 </div>
 
                 {/* Activity / Posts section */}
-                <div className='bg-white rounded-lg border border-zinc-200 p-5 mt-4'>
+                <div className='bg-white rounded-lg border border-zinc-200 p-4 md:p-5 mt-4'>
                     <div className='flex items-center justify-between mb-1'>
                         <h2 className='text-lg font-semibold text-zinc-900'>Activity</h2>
                     </div>
@@ -91,10 +91,10 @@ function Profile() {
                     </p>
 
                     {/* Tabs */}
-                    <div className='flex items-center gap-2 mb-4'>
+                    <div className='flex items-center gap-2 mb-4 overflow-x-auto'>
                         <button
                             onClick={() => setActiveTab("posts")}
-                            className={`px-4 py-1.5 text-sm font-semibold rounded-full border transition-colors ${
+                            className={`shrink-0 px-4 py-1.5 text-sm font-semibold rounded-full border transition-colors ${
                                 activeTab === "posts"
                                     ? "bg-[#0a66c2] text-white border-[#0a66c2]"
                                     : "bg-white text-zinc-700 border-zinc-400 hover:bg-zinc-100"
@@ -104,7 +104,7 @@ function Profile() {
                         </button>
                         <button
                             onClick={() => setActiveTab("comments")}
-                            className={`px-4 py-1.5 text-sm font-semibold rounded-full border transition-colors ${
+                            className={`shrink-0 px-4 py-1.5 text-sm font-semibold rounded-full border transition-colors ${
                                 activeTab === "comments"
                                     ? "bg-[#0a66c2] text-white border-[#0a66c2]"
                                     : "bg-white text-zinc-700 border-zinc-400 hover:bg-zinc-100"
@@ -114,7 +114,7 @@ function Profile() {
                         </button>
                         <button
                             onClick={() => setActiveTab("images")}
-                            className={`px-4 py-1.5 text-sm font-semibold rounded-full border transition-colors ${
+                            className={`shrink-0 px-4 py-1.5 text-sm font-semibold rounded-full border transition-colors ${
                                 activeTab === "images"
                                     ? "bg-[#0a66c2] text-white border-[#0a66c2]"
                                     : "bg-white text-zinc-700 border-zinc-400 hover:bg-zinc-100"
@@ -131,7 +131,7 @@ function Profile() {
                         ) : (
                             <div className='flex flex-row gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent'>
                                 {myPosts.map((p) => (
-                                    <div key={p._id} className='w-80 shrink-0'>
+                                    <div key={p._id} className='w-72 md:w-80 shrink-0'>
                                         <Post
                                             id={p._id}
                                             author={p.author}
@@ -157,7 +157,7 @@ function Profile() {
                         myPosts.filter((p) => p.image).length === 0 ? (
                             <p className='text-zinc-500 text-sm text-center py-6'>No image posts yet.</p>
                         ) : (
-                            <div className='grid grid-cols-3 gap-2'>
+                            <div className='grid grid-cols-2 md:grid-cols-3 gap-2'>
                                 {myPosts.filter((p) => p.image).map((p) => (
                                     <img
                                         key={p._id}
@@ -173,7 +173,7 @@ function Profile() {
 
                 {/* Skills */}
                 {profileData.skills?.length > 0 && (
-                    <div className='bg-white rounded-lg border border-zinc-200 p-5 mt-4'>
+                    <div className='bg-white rounded-lg border border-zinc-200 p-4 md:p-5 mt-4'>
                         <h2 className='text-lg font-semibold text-zinc-900 mb-3'>Skills</h2>
                         <div className='flex flex-wrap gap-2'>
                             {profileData.skills.map((skill, idx) => (
@@ -190,7 +190,7 @@ function Profile() {
 
                 {/* Experience */}
                 {profileData.experience?.length > 0 && (
-                    <div className='bg-white rounded-lg border border-zinc-200 p-5 mt-4'>
+                    <div className='bg-white rounded-lg border border-zinc-200 p-4 md:p-5 mt-4'>
                         <h2 className='text-lg font-semibold text-zinc-900 mb-3'>Experience</h2>
                         <div className='flex flex-col gap-4'>
                             {profileData.experience.map((exp, idx) => (
@@ -208,7 +208,7 @@ function Profile() {
 
                 {/* Education */}
                 {profileData.education?.length > 0 && (
-                    <div className='bg-white rounded-lg border border-zinc-200 p-5 mt-4'>
+                    <div className='bg-white rounded-lg border border-zinc-200 p-4 md:p-5 mt-4'>
                         <h2 className='text-lg font-semibold text-zinc-900 mb-3'>Education</h2>
                         <div className='flex flex-col gap-4'>
                             {profileData.education.map((edu, idx) => (
@@ -226,7 +226,7 @@ function Profile() {
 
                 {/* Gender (optional display) */}
                 {profileData.gender && (
-                    <div className='bg-white rounded-lg border border-zinc-200 p-5 mt-4'>
+                    <div className='bg-white rounded-lg border border-zinc-200 p-4 md:p-5 mt-4'>
                         <h2 className='text-lg font-semibold text-zinc-900 mb-3'>Basic Info</h2>
                         <p className='text-zinc-600 text-sm capitalize'>{profileData.gender}</p>
                     </div>

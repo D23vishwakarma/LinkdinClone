@@ -68,7 +68,7 @@ function Home() {
     }
 
     return (
-        <div className='w-full bg-[#f0efe7] h-full overflow-hidden flex flex-col md:flex-row items-start justify-center pt-17 md:pt-20 md:px-2 gap-[15px] md:gap-[15px]'>
+        <div className='w-full bg-[#f0efe7] h-full overflow-hidden flex flex-col md:flex-row items-start justify-center pt-17 md:pt-20 md:px-2 gap-[10px] md:gap-[15px]'>
             {edit && <EditProfile />}
             <Header />
             {/* First Section */}
@@ -211,7 +211,7 @@ function Home() {
                     </div>
                 </>
             )}
-            <div className='w-full md:w-[40%] flex flex-col justify-center items-center gap-5 overflow-hidden overflow-y-auto'>
+            <div className='w-full md:w-[40%] flex flex-col justify-center items-center gap-3 sm:gap-5 overflow-hidden overflow-y-auto'>
                 <div className='w-full h-22 flex justify-center items-center gap-7 bg-white rounded-lg border border-zinc-200 px-5'>
                     <img
                         src={userData.profileImage ? userData.profileImage : profile}
