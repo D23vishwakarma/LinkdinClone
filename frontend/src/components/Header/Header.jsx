@@ -141,8 +141,8 @@ export default function Header() {
 
                         {/* Manage section */}
                         <div className="flex flex-col py-2">
-                            <button className="flex items-center justify-between px-6 py-3 hover:bg-gray-100 transition-colors text-left">
-                                <div className="flex items-center gap-3" onClick={() => navigate("/network")}>
+                            <button className="flex items-center justify-between px-6 py-3 hover:bg-gray-100 transition-colors text-left" onClick={() => navigate("/network")}>
+                                <div className="flex items-center gap-3">
                                     <FaUserFriends className="w-4 h-4 text-gray-500" />
                                     <span className="text-sm text-zinc-700">My Network</span>
                                 </div>

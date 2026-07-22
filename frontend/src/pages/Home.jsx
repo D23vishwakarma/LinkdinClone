@@ -19,6 +19,7 @@ function Home() {
     const navigate=useNavigate();
     const { userData, setUserData, edit, setEdit, post, setPost, searchPop, setSearchPop } = useContext(userContext);
     const [addPost, setAddPost] = useState(false);
+    const [loading,setLoading]=useState(false);
     const [content, setContent] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
@@ -50,6 +51,7 @@ function Home() {
     };
 
     const uploadPost = async (req, res) => {
+        setLoading(true);
         try {
             const formdata = new FormData()
             formdata.append("description", content);
@@ -58,6 +60,7 @@ function Home() {
             }
             const result = await axios.post(serverUrl + "/api/post/createpost", formdata, { withCredentials: true })
             setPost(prevPost => [result.data.data, ...prevPost])
+            setLoading(false);
             setAddPost(!addPost)
             setContent("")
             setPreviewImage(null)
@@ -202,10 +205,10 @@ function Home() {
 
                             <button
                                 disabled={!content.trim() && !selectedImage}
-                                className='bg-[#0a66c2] text-white font-medium text-sm px-4 py-1.5 rounded-full disabled:bg-zinc-200 disabled:text-zinc-400 hover:bg-[#004182] disabled:hover:bg-zinc-200 transition-colors'
+                                className={`bg-[#0a66c2] text-white font-medium text-sm px-4 py-1.5 rounded-full disabled:bg-zinc-200 disabled:text-zinc-400 hover:bg-[#004182] disabled:hover:bg-zinc-200 transition-colors disabled:${loading}`}
                                 onClick={uploadPost}
                             >
-                                Post
+                                {loading?"Posting...":"Post"}
                             </button>
                         </div>
                     </div>
@@ -225,12 +228,12 @@ function Home() {
                 ))}
             </div>
             {/* Last section */}
-            <div className='min-h-40 max-h-76 w-full bg-white md:w-[19%] rounded-lg border border-zinc-200 hidden md:flex flex-col overflow-hidden'>
-                <h3 className='px-4 pt-4 pb-2 font-semibold text-sm text-zinc-800'>
+            <div className='min-h-33 max-h-76 w-full bg-white md:w-[19%] rounded-lg border border-zinc-200 hidden md:flex flex-col overflow-hidden'>
+                <h3 className='px-4 pt-4 pb-2 font-semibold text-md text-zinc-800'>
                     Add to your feed
                 </h3>
 
-                <div className='flex flex-col overflow-y-auto'>
+                <div className='flex flex-col overflow-y-auto mt-1'>
                     {suggestedUser.map((it) => (
                         <div
                             key={it._id}
