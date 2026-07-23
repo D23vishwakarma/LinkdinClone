@@ -10,6 +10,7 @@ import { connectionRouter } from './routes/connection.routes.js';
 import http from 'http'
 import { Server, Socket } from 'socket.io';
 import { notiRouter } from './routes/notification.routes.js';
+import { convoRouter } from './routes/message.routes.js';
 dotenv.config();
 
 const app= express();
@@ -32,6 +33,7 @@ app.use("/api/user/",userRouter)
 app.use("/api/post/",postRouter)
 app.use("/api/connection/",connectionRouter)
 app.use("/api/notification/",notiRouter)
+app.use("/api/message/",convoRouter)
 export const userSocketMap=new Map();
 io.on("connection",(socket)=>{
   // console.log("User connected",socket.id);

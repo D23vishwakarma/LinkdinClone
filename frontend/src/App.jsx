@@ -10,6 +10,7 @@ import { userContext } from './context/UserContext'
 import Network from './pages/Network'
 import Profile from './pages/Profile'
 import Notification from './pages/Notification'
+import Message from './pages/Message'
 function App() {
   const [count, setCount] = useState(0)
   const {userData}=useContext(userContext)
@@ -22,6 +23,7 @@ function App() {
       <Route path='/profile' element={userData?<Navigate to={`/profile/${userData.username}`}/>:<Login/>}/>
       <Route path='/profile/:username' element={userData?<Profile />:<Login/>}/>
       <Route path='/notification' element={userData?<Notification />:<Login/>}/>
+      <Route path='/message' element={userData?<Message />:<Login/>}/>
       
 
     </Routes>

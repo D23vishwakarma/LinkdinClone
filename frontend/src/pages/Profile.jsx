@@ -72,7 +72,7 @@ function Profile() {
                             <div className='shrink-0 self-end sm:self-auto'>
                                {profileData._id==userData._id ? <button
                                     onClick={() => setEdit(true)}
-                                    className='p-2 md:p-4 absolute top-3 right-3 md:top-70 md:right-101'
+                                    className='p-2 md:p-4 absolute top-3 right-3 md:top-50 md:right-2'
                                 >
                                     <FaPencilAlt className='text-zinc-700' size={18} />
                                 </button>: <ConnectionBtn userId={profileData._id}/>}

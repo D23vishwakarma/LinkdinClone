@@ -29,7 +29,7 @@ export const createPost = asyncHandler(async (req, res) => {
 });
 
 export const getPosts = asyncHandler(async (req, res) => {
-    const post = await Post.find().populate("author", "firstName lastName profileImage headline username").populate("comments.user", "firstName lastName profileImage headline ")
+    const post = await Post.find().populate("author", "firstName lastName profileImage headline username").populate("comments.user", "firstName lastName profileImage headline ").sort({createdAt: -1})
 
     return res.status(200).json(
         new ApiResponse(200, post, "Showing all posts")

@@ -1,4 +1,5 @@
 import { FaHome, FaUserFriends, FaBell, FaSearch, FaSignOutAlt, FaChevronRight, FaCaretDown } from "react-icons/fa";
+import { AiFillMessage } from "react-icons/ai";
 import shortlogo from '../../assets/shortlogo.svg'
 import profile from '../../assets/profile.svg'
 import { useEffect, useState } from "react";
@@ -169,12 +170,16 @@ export default function Header() {
                         <FaUserFriends className="w-5 h-5" />
                         <span className="text-xs mt-0.5">My Network</span>
                     </div>
-
+                    <Link to={"/message"} className="flex flex-col items-center text-gray-500 cursor-pointer">
+                        <AiFillMessage className="w-5 h-5"/>
+                        <span className="hidden sm:block text-xs mt-0.5">Message</span>
+                    </Link>
                     {/* Bell — always visible, no label on mobile */}
                     <Link to={"/notification"} className="flex flex-col items-center text-gray-500 cursor-pointer">
                         <FaBell className="w-5 h-5" />
                         <span className="hidden sm:block text-xs mt-0.5">Notifications</span>
                     </Link>
+                    
 
                     {/* Profile image */}
                     <img
@@ -184,7 +189,7 @@ export default function Header() {
                         onClick={() => setShowpopup(!showpopup)}
 
                     />
-                    <FaCaretDown className="absolute top-8 left-67.5 text-zinc-500" />
+                    <FaCaretDown className="absolute top-8 left-87 text-zinc-500" />
                 </div>
             </div>
         </div>
